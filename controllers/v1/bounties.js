@@ -31,7 +31,18 @@ router.delete('/', (req, res) => {
 
 //GET v1/bounties/:id - Retrieve a single bounty by its ID
 router.get('/:id', (req, res) => {
-    res.send('TBD - Get one bounty')
+    db.Bounty.findById(req.params.id)
+    .then(bounty => {
+        if(bounty) {
+            res.send(bounty)
+        } else {
+            res.status(404).send({ message: 'Resource not Located'})
+        } //this error is like 'query was correct, but thi thing doesnt exist' 
+    })
+    .catch(err => {
+        console.log('ERROR in GET /bounties/:id', err)
+        res.status(503).send({message: 'Service Unvailable'})
+    }) //This error is like 'the query didnt work correctly, there was an error'
 })
 
 //PUT /v1/bounties/:id - Update a single bounty
